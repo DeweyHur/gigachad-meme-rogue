@@ -1,55 +1,79 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Modal, ScrollView, Image } from 'react-native';
-import { COLORS } from '@/constants/colors';
-import { CardType, EquipmentType } from '@/types/game';
+import { View, Text, StyleSheet, Pressable, Modal, ScrollView } from 'react-native';
+import { COLORS, getGradeColor } from '@/constants/colors';
+import { CardType, EquipmentType, EquippedItemsType } from '@/types/game';
 import Card from './Card';
 
 type DeckViewerProps = {
   equipment: EquipmentType[];
-  currentEquipment: string;
-  onChangeEquipment: (equipmentId: string) => void;
+  equippedItems: EquippedItemsType;
 };
 
 export default function DeckViewer({ 
   equipment, 
-  currentEquipment, 
-  onChangeEquipment 
+  equippedItems
 }: DeckViewerProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedEquipment, setSelectedEquipment] = useState<string>(currentEquipment);
-  const [showEquipmentDetails, setShowEquipmentDetails] = useState<EquipmentType | null>(null);
   
   const handleOpen = () => {
     setIsVisible(true);
-    setSelectedEquipment(currentEquipment);
   };
   
   const handleClose = () => {
     setIsVisible(false);
   };
   
-  const handleSave = () => {
-    onChangeEquipment(selectedEquipment);
-    setIsVisible(false);
+  // Get all cards from all equipped equipment
+  const getAllDeckCards = (): Array<{card: CardType, equipment: EquipmentType, slot: string}> => {
+    const allCards: Array<{card: CardType, equipment: EquipmentType, slot: string}> = [];
+    
+    Object.entries(equippedItems).forEach(([slot, equipmentId]) => {
+      if (!equipmentId) return;
+      
+      const equip = equipment.find(e => e.id === equipmentId);
+      if (!equip) return;
+      
+      // Add all cards from this equipment
+      equip.cards.forEach(card => {
+        for (let i = 0; i < (card.quantity || 1); i++) {
+          allCards.push({ card: { ...card }, equipment: equip, slot });
+        }
+      });
+    });
+    
+    return allCards;
   };
   
-  const getCurrentEquipmentCards = () => {
-    const equip = equipment.find(e => e.id === selectedEquipment);
-    return equip ? equip.cards : [];
-  };
+  const deckCards = getAllDeckCards();
   
-  const handleEquipmentDetails = (equip: EquipmentType) => {
-    setShowEquipmentDetails(equip);
-  };
+  // Group cards by equipment for display
+  const cardsByEquipment = deckCards.reduce((acc, { card, equipment, slot }) => {
+    const key = `${equipment.id}-${slot}`;
+    if (!acc[key]) {
+      acc[key] = {
+        equipment,
+        slot,
+        cards: []
+      };
+    }
+    acc[key].cards.push(card);
+    return acc;
+  }, {} as Record<string, { equipment: EquipmentType, slot: string, cards: CardType[] }>);
   
-  const closeEquipmentDetails = () => {
-    setShowEquipmentDetails(null);
+  const slotNames: Record<string, string> = {
+    weapon: 'Weapon',
+    head: 'Head',
+    chest: 'Chest', 
+    offhand: 'Offhand',
+    feet: 'Feet',
+    accessory1: 'Accessory 1',
+    accessory2: 'Accessory 2'
   };
   
   return (
     <>
       <Pressable style={styles.viewDeckButton} onPress={handleOpen}>
-        <Text style={styles.viewDeckText}>View Deck</Text>
+        <Text style={styles.viewDeckText}>View Deck ({deckCards.length})</Text>
       </Pressable>
       
       <Modal
@@ -60,107 +84,39 @@ export default function DeckViewer({
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.title}>Your Deck</Text>
-            
-            <View style={styles.equipmentSelector}>
-              <Text style={styles.sectionTitle}>Select Equipment:</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {equipment.map(item => (
-                  <Pressable
-                    key={item.id}
-                    style={[
-                      styles.equipmentItem,
-                      selectedEquipment === item.id && styles.selectedEquipment,
-                    ]}
-                    onPress={() => setSelectedEquipment(item.id)}
-                    onLongPress={() => handleEquipmentDetails(item)}
-                  >
-                    <Image source={{ uri: item.image }} style={styles.equipmentImage} />
-                    <Text style={styles.equipmentName}>{item.name}</Text>
-                    {item.id === currentEquipment && (
-                      <View style={styles.equippedBadge}>
-                        <Text style={styles.equippedText}>Equipped</Text>
-                      </View>
-                    )}
-                  </Pressable>
-                ))}
-              </ScrollView>
-              <Text style={styles.equipmentHint}>Long press on equipment to see details</Text>
-            </View>
-            
-            <View style={styles.deckInfo}>
-              <Text style={styles.sectionTitle}>Cards in Deck:</Text>
-              <Text style={styles.cardCount}>{getCurrentEquipmentCards().length} cards</Text>
-            </View>
+            <Text style={styles.title}>Your Complete Deck</Text>
+            <Text style={styles.subtitle}>{deckCards.length} total cards</Text>
             
             <ScrollView style={styles.cardsContainer}>
-              <View style={styles.cardsGrid}>
-                {getCurrentEquipmentCards().map((card, index) => (
-                  <Card
-                    key={`${card.id}-${index}`}
-                    card={card}
-                    disabled={true}
-                  />
-                ))}
-              </View>
+              {Object.entries(cardsByEquipment).map(([key, { equipment, slot, cards }]) => (
+                <View key={key} style={styles.equipmentSection}>
+                  <View style={styles.equipmentHeader}>
+                    <Text style={styles.equipmentName}>{equipment.name}</Text>
+                    <Text style={styles.slotName}>{slotNames[slot]}</Text>
+                    {equipment.grade && equipment.grade !== 'common' && (
+                      <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(equipment.grade) }]}>
+                        <Text style={styles.gradeText}>{equipment.grade.toUpperCase()}</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.cardCount}>{cards.length} cards</Text>
+                  
+                  <View style={styles.cardsGrid}>
+                    {cards.map((card, index) => (
+                      <View key={`${card.id}-${index}`} style={styles.cardWrapper}>
+                        <Card card={card} disabled={true} />
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              ))}
             </ScrollView>
             
-            <View style={styles.buttonContainer}>
-              <Pressable 
-                style={[
-                  styles.saveButton,
-                  selectedEquipment === currentEquipment && styles.disabledButton
-                ]} 
-                onPress={handleSave}
-                disabled={selectedEquipment === currentEquipment}
-              >
-                <Text style={styles.buttonText}>Equip Selected</Text>
-              </Pressable>
-              <Pressable style={styles.closeButton} onPress={handleClose}>
-                <Text style={styles.buttonText}>Close</Text>
-              </Pressable>
-            </View>
+            <Pressable style={styles.closeButton} onPress={handleClose}>
+              <Text style={styles.buttonText}>Close</Text>
+            </Pressable>
           </View>
         </View>
-      </Modal>
-      
-      {/* Equipment Details Modal */}
-      <Modal
-        visible={showEquipmentDetails !== null}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={closeEquipmentDetails}
-      >
-        {showEquipmentDetails && (
-          <View style={styles.detailsOverlay}>
-            <View style={styles.detailsContent}>
-              <View style={styles.detailsHeader}>
-                <Image source={{ uri: showEquipmentDetails.image }} style={styles.detailsImage} />
-                <View style={styles.detailsHeaderText}>
-                  <Text style={styles.detailsTitle}>{showEquipmentDetails.name}</Text>
-                  <Text style={styles.detailsDescription}>{showEquipmentDetails.description}</Text>
-                </View>
-              </View>
-              
-              <Text style={styles.detailsCardsTitle}>Cards in this equipment:</Text>
-              <ScrollView style={styles.detailsCardsContainer}>
-                <View style={styles.detailsCardsGrid}>
-                  {showEquipmentDetails.cards.map((card, index) => (
-                    <Card
-                      key={`detail-${card.id}-${index}`}
-                      card={card}
-                      disabled={true}
-                    />
-                  ))}
-                </View>
-              </ScrollView>
-              
-              <Pressable style={styles.detailsCloseButton} onPress={closeEquipmentDetails}>
-                <Text style={styles.buttonText}>Close</Text>
-              </Pressable>
-            </View>
-          </View>
-        )}
       </Modal>
     </>
   );
@@ -192,7 +148,7 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '95%',
     height: '90%',
-    maxWidth: 600,
+    maxWidth: 800,
     borderWidth: 2,
     borderColor: COLORS.secondary,
   },
@@ -200,179 +156,76 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    color: COLORS.text,
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  equipmentSelector: {
-    marginBottom: 15,
-  },
-  equipmentItem: {
-    width: 100,
-    height: 130,
-    backgroundColor: COLORS.cardBackground,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 8,
-    marginRight: 10,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  selectedEquipment: {
-    borderColor: COLORS.primary,
-  },
-  equipmentImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 5,
     marginBottom: 5,
-  },
-  equipmentName: {
-    color: COLORS.text,
-    fontWeight: 'bold',
-    fontSize: 12,
     textAlign: 'center',
   },
-  equippedBadge: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: COLORS.success,
-    paddingHorizontal: 5,
-    paddingVertical: 2,
-    borderRadius: 5,
-  },
-  equippedText: {
-    color: '#FFF',
-    fontSize: 8,
-    fontWeight: 'bold',
-  },
-  equipmentHint: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
-    marginTop: 5,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  deckInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  cardCount: {
+  subtitle: {
     color: COLORS.textSecondary,
     fontSize: 16,
+    marginBottom: 15,
+    textAlign: 'center',
   },
   cardsContainer: {
     flex: 1,
     marginBottom: 15,
   },
+  equipmentSection: {
+    marginBottom: 20,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.cardBorder,
+  },
+  equipmentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    flexWrap: 'wrap',
+  },
+  equipmentName: {
+    color: COLORS.text,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  slotName: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  gradeBadge: {
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+  },
+  gradeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  cardCount: {
+    color: COLORS.textSecondary,
+    fontSize: 14,
+    marginBottom: 10,
+  },
   cardsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  saveButton: {
-    backgroundColor: COLORS.success,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    flex: 1,
-    marginRight: 10,
-  },
-  disabledButton: {
-    backgroundColor: COLORS.cardBackground,
-    opacity: 0.7,
+  cardWrapper: {
+    margin: 2,
   },
   closeButton: {
     backgroundColor: COLORS.secondary,
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    flex: 1,
+    alignItems: 'center',
   },
   buttonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  
-  // Equipment details modal styles
-  detailsOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  detailsContent: {
-    backgroundColor: COLORS.background,
-    borderRadius: 15,
-    padding: 20,
-    width: '95%',
-    maxHeight: '90%',
-    maxWidth: 500,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-  },
-  detailsHeader: {
-    flexDirection: 'row',
-    marginBottom: 15,
-  },
-  detailsImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 15,
-  },
-  detailsHeaderText: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  detailsTitle: {
-    color: COLORS.text,
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  detailsDescription: {
-    color: COLORS.textSecondary,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  detailsCardsTitle: {
-    color: COLORS.text,
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  detailsCardsContainer: {
-    maxHeight: 350,
-    marginBottom: 15,
-  },
-  detailsCardsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  detailsCloseButton: {
-    backgroundColor: COLORS.secondary,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignSelf: 'center',
   },
 });

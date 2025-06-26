@@ -14,6 +14,7 @@ import RewardPopup from '@/components/RewardPopup';
 import EquipmentManager from '@/components/EquipmentManager';
 import ItemsManager from '@/components/ItemsManager';
 import PerksViewer from '@/components/PerksViewer';
+import DeckViewer from '@/components/DeckViewer';
 
 export default function GameScreen() {
   const { 
@@ -212,12 +213,14 @@ export default function GameScreen() {
                 equippedItems={player.equippedItems}
                 onEquip={equipItem}
               />
-              
+              <DeckViewer
+                equipment={player.equipment}
+                equippedItems={player.equippedItems}
+              />
               <ItemsManager 
                 items={player.items}
                 onUseItem={useItem}
               />
-              
               <PerksViewer 
                 perks={player.perks}
               />

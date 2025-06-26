@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, Image } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { COLORS, getGradeColor } from '@/constants/colors';
 import Card from './Card';
 import { ShopItemType, EquipmentType } from '@/types/game';
 import { EQUIPMENT } from '@/constants/game';
@@ -18,6 +18,24 @@ export default function ShopItem({ item, onBuy, canAfford }: ShopItemProps) {
   // Get equipment details if it's an equipment item
   const equipmentDetails = type === 'equipment' && id ? 
     EQUIPMENT.find(e => e.id === id) : undefined;
+  
+  // For cards, try to infer grade from equipment pool (first match by name)
+  let cardGrade: string | undefined = undefined;
+  if (type === 'card') {
+    for (const eq of EQUIPMENT) {
+      const found = eq.cards.find(c => c.name === name);
+      if (found) {
+        cardGrade = found.grade;
+        break;
+      }
+    }
+  }
+
+  // For equipment, get grade from equipmentDetails
+  const equipmentGrade = equipmentDetails?.grade;
+
+  // Badge color
+  const gradeColor = getGradeColor(equipmentGrade || (cardGrade as any));
   
   const getItemIcon = () => {
     switch (type) {
@@ -58,6 +76,17 @@ export default function ShopItem({ item, onBuy, canAfford }: ShopItemProps) {
         <View style={styles.header}>
           <Text style={styles.icon}>{getItemIcon()}</Text>
           <Text style={styles.name}>{name}</Text>
+          {/* Grade badge for equipment and cards */}
+          {(equipmentGrade && equipmentGrade !== 'common') && (
+            <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(equipmentGrade) }]}> 
+              <Text style={styles.gradeText}>{equipmentGrade.toUpperCase()}</Text>
+            </View>
+          )}
+          {(cardGrade && cardGrade !== 'common') && (
+            <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(cardGrade as any) }]}> 
+              <Text style={styles.gradeText}>{cardGrade.toUpperCase()}</Text>
+            </View>
+          )}
         </View>
         
         <View style={styles.content}>
@@ -110,6 +139,17 @@ export default function ShopItem({ item, onBuy, canAfford }: ShopItemProps) {
             <View style={styles.modalHeader}>
               <Text style={styles.modalIcon}>{getItemIcon()}</Text>
               <Text style={styles.modalTitle}>{name}</Text>
+              {/* Grade badge in modal */}
+              {(equipmentGrade && equipmentGrade !== 'common') && (
+                <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(equipmentGrade) }]}> 
+                  <Text style={styles.gradeText}>{equipmentGrade.toUpperCase()}</Text>
+                </View>
+              )}
+              {(cardGrade && cardGrade !== 'common') && (
+                <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(cardGrade as any) }]}> 
+                  <Text style={styles.gradeText}>{cardGrade.toUpperCase()}</Text>
+                </View>
+              )}
             </View>
             
             {type === 'card' && (
@@ -397,5 +437,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  gradeBadge: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+  },
+  gradeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });

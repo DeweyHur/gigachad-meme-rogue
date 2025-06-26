@@ -108,7 +108,7 @@ export const EQUIPMENT = [
       { id: 'finger_snap', name: 'Finger Snap', damage: 20, energy: 3, description: 'Deal 20 damage to all enemies', quantity: 1, grade: 'legendary' as const },
       { id: 'power_bash', name: 'Power Bash', damage: 10, energy: 1, description: 'Deal 10 damage', quantity: 2, grade: 'rare' as const },
       { id: 'cosmic_shield', name: 'Cosmic Shield', block: 8, energy: 1, description: 'Gain 8 block', quantity: 3, grade: 'uncommon' as const },
-      { id: 'reality_warp', name: 'Reality Warp', energy: 2, description: 'Draw 3 cards', quantity: 1, grade: 'epic' as const },
+      { id: 'reality_warp', name: 'Reality Warp', energy: 2, draw: 3, description: 'Draw 3 cards', quantity: 1, grade: 'epic' as const },
     ]
   },
   {
@@ -160,7 +160,7 @@ export const EQUIPMENT = [
     slot: 'feet' as EquipmentSlotType,
     grade: 'uncommon' as const,
     cards: [
-      { id: 'quick_step', name: 'Quick Step', energy: 0, description: 'Draw 1 card', quantity: 2, grade: 'rare' as const },
+      { id: 'quick_step', name: 'Quick Step', energy: 0, draw: 1, description: 'Draw 1 card', quantity: 2, grade: 'rare' as const },
       { id: 'leg_sweep', name: 'Leg Sweep', damage: 5, energy: 1, description: 'Deal 5 damage and gain 5 block', quantity: 3, grade: 'uncommon' as const },
       { id: 'run_away', name: 'Tactical Retreat', block: 12, energy: 2, description: 'Gain 12 block', quantity: 2, grade: 'common' as const },
     ]
@@ -174,8 +174,8 @@ export const EQUIPMENT = [
     grade: 'common' as const,
     cards: [
       { id: 'protein_boost', name: 'Protein Boost', strength: 1, energy: 1, description: 'Gain 1 permanent strength', quantity: 1, grade: 'epic' as const },
-      { id: 'quick_sip', name: 'Quick Sip', energy: 1, description: 'Heal 5 HP', quantity: 2, grade: 'uncommon' as const },
-      { id: 'energy_drink', name: 'Energy Drink', energy: 0, description: 'Gain 2 energy', quantity: 1, grade: 'rare' as const },
+      { id: 'quick_sip', name: 'Quick Sip', heal: 5, energy: 1, description: 'Heal 5 HP', quantity: 2, grade: 'uncommon' as const },
+      { id: 'energy_drink', name: 'Energy Drink', energyGain: 2, energy: 0, description: 'Gain 2 energy', quantity: 1, grade: 'rare' as const },
     ]
   },
   {
@@ -236,7 +236,7 @@ export const EQUIPMENT = [
     grade: 'common' as const,
     cards: [
       { id: 'magic_spark', name: 'Magic Spark', damage: 4, energy: 1, description: 'Deal 4 damage', quantity: 2, grade: 'common' as const },
-      { id: 'basic_heal', name: 'Basic Heal', energy: 1, description: 'Heal 3 HP', quantity: 2, grade: 'common' as const },
+      { id: 'basic_heal', name: 'Basic Heal', heal: 3, energy: 1, description: 'Heal 3 HP', quantity: 2, grade: 'common' as const },
     ]
   }
 ];

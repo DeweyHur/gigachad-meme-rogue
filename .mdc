@@ -3,197 +3,166 @@ description:
 globs: 
 alwaysApply: true
 ---
-# MDC (Model-Driven Configuration) Rule for Gigachad Meme Rogue
+# Gigachad Meme Rogue - Game Rules & Configuration
 
-# Project Configuration
-project:
-  name: "Gigachad Meme Rogue"
-  type: "react-native-expo"
-  platform: "rork"
-  version: "1.0.0"
+## Game Overview
+A roguelike card game where you play as Gigachad, fighting against Italian brain rot characters through a path-based adventure system.
 
-# Development Rules
-development:
-  # Code Quality Rules
-  linting:
-    - "Use TypeScript strict mode"
-    - "Import React in all JSX files"
-    - "Use proper type annotations"
-    - "Follow component naming conventions"
-  
-  # File Structure Rules
-  structure:
-    - "Components in /components directory"
-    - "Types in /types directory"
-    - "Constants in /constants directory"
-    - "Store logic in /store directory"
-    - "App screens in /app directory"
+## Core Systems
 
-  # State Management Rules
-  state:
-    - "Use Zustand for global state"
-    - "Persist game state with AsyncStorage"
-    - "Keep state normalized"
-    - "Use proper TypeScript types for state"
+### Path System
+- **Path Generation**: Each run generates a unique path with 7 nodes
+- **Node Types**: Battle, Shop, Event, Camp, Shrine, Blacksmith, Boss
+- **Progression**: Must defeat all 5 bosses to win
+- **Node Distribution**: 
+  - Battle: 70%
+  - Shop: 5%
+  - Event: 10%
+  - Camp: 5%
+  - Shrine: 5%
+  - Blacksmith: 5%
 
-# Game Configuration Rules
-game:
-  # Balance Rules
-  balance:
-    - "Player starting health: 80"
-    - "Player starting energy: 3"
-    - "Max hand size: 5"
-    - "Path height: 7 nodes"
-    - "Max path width: 4 nodes"
-  
-  # Hand System Rules
-  hand_system:
-    - "Every turn: discard all cards in hand"
-    - "Redraw up to max hand size (3 cards)"
-    - "Respect perks that modify hand size"
-    - "No cards left in hand at end of turn"
-  
-  # Node Distribution Rules
-  nodes:
-    battle: 0.7
-    shop: 0.05
-    event: 0.1
-    camp: 0.05
-    shrine: 0.05
-    blacksmith: 0.05
-  
-  # Equipment Rules
-  equipment:
-    - "All equipment slots start equipped with defaults"
-    - "Players can only switch equipment, never unequip"
-    - "Each equipment provides cards to the deck"
-    - "Cards have energy costs and effects"
-    - "Equipment affects player stats and abilities"
-    - "Equipment can be upgraded at blacksmith"
-  
-  # Default Equipment Configuration
-  default_equipment:
-    weapon: "Gigachad Fists (Common)"
-    head: "Basic Hat (Common)"
-    offhand: "Basic Shield (Common)"
-    chest: "Six-Pack Abs Armor (Common)"
-    feet: "Basic Shoes (Common)"
-    accessory1: "Protein Shake Necklace (Common)"
-    accessory2: "Basic Ring (Common)"
-  
-  # Deck Building Rules
-  deck_building:
-    - "Deck is built from all equipped equipment"
-    - "Starting deck includes cards from all 7 equipment slots"
-    - "Deck is shuffled at start of each battle"
-    - "Cards are drawn from draw pile, discarded to discard pile"
-    - "When draw pile is empty, shuffle discard pile into draw pile"
+### Battle System
+- **Turn-based**: Player turn → Enemy turn
+- **Energy System**: Start with 3 energy, spend to play cards
+- **Hand Management**: Draw up to max hand size (5 cards)
+- **Card Effects**: Damage, block, healing, energy gain, card draw
+- **Victory**: Defeat enemy or boss
+- **Defeat**: Player health reaches 0
 
-# UI/UX Rules
-ui:
-  # Color Scheme
-  colors:
-    primary: "#FF6B35"
-    secondary: "#4ECDC4"
-    background: "#2C3E50"
-    text: "#ECF0F1"
-    success: "#27AE60"
-    error: "#E74C3C"
-    cardBackground: "#34495E"
-  
-  # Component Rules
-  components:
-    - "Use consistent spacing (8px base)"
-    - "Use rounded corners (8px radius)"
-    - "Implement proper touch targets"
-    - "Use proper contrast ratios"
-    - "Support dark/light themes"
-    - "Show hand size in battle UI"
-    - "Display equipment slots with current equipment"
-    - "Use graded borders for equipment and cards"
-    - "Show grade badges for uncommon+ items"
-    - "Grade colors: Common (Gray), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Orange)"
+### Card System
+- **Card Sources**: All cards come from equipped equipment
+- **Card Properties**: Energy cost, damage, block, heal, energy gain, draw, strength
+- **Card Grades**: Common (Gray), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Orange)
+- **Card Effects**:
+  - Damage: Deal damage to enemy
+  - Block: Gain temporary damage reduction
+  - Heal: Restore player health (up to max)
+  - Energy Gain: Increase current energy (up to max)
+  - Draw: Draw additional cards from deck
+  - Strength: Gain temporary attack bonus
 
-# Performance Rules
-performance:
-  - "Optimize re-renders with React.memo"
-  - "Use proper key props in lists"
-  - "Lazy load components when possible"
-  - "Optimize images and assets"
-  - "Minimize bundle size"
-  - "Efficient card drawing and shuffling"
+### Equipment System
+- **7 Equipment Slots**: Weapon, Head, Chest, Offhand, Feet, Accessory1, Accessory2
+- **Default Equipment**: All slots start with common-grade equipment
+- **Equipment Switching**: Can only switch equipment, never unequip
+- **Equipment Grades**: Visual grading system with colored borders
+- **Equipment Cards**: Each equipment provides cards to the deck
 
-# Testing Rules
-testing:
-  - "Write unit tests for game logic"
-  - "Test state management functions"
-  - "Test component rendering"
-  - "Test user interactions"
-  - "Test hand system (discard and redraw)"
-  - "Test equipment switching functionality"
+### Deck Management
+- **Deck Composition**: Built from all equipped equipment
+- **Deck Viewer**: Complete view of all cards from all equipment
+- **Card Organization**: Cards grouped by source equipment with slot labels
+- **Deck Size**: Varies based on equipment and card quantities
 
-# Deployment Rules
-deployment:
-  - "Use Rork platform for development"
-  - "Configure proper bundle identifiers"
-  - "Set up proper app icons"
-  - "Configure splash screens"
-  - "Set up proper navigation"
+### Hand System
+- **Hand Size**: Maximum 5 cards (can be modified by perks)
+- **Turn Structure**: Every turn discards all cards and redraws up to max
+- **Card Drawing**: From draw pile, reshuffles discard when empty
 
-# Security Rules
-security:
-  - "Validate all user inputs"
-  - "Sanitize data before storage"
-  - "Use secure storage for sensitive data"
-  - "Implement proper error handling"
+### Energy System
+- **Starting Energy**: 3 energy per turn
+- **Energy Costs**: Cards cost energy to play
+- **Energy Gain**: Some cards provide additional energy
+- **Energy Limits**: Cannot exceed maximum energy
 
-# Accessibility Rules
-accessibility:
-  - "Use proper accessibility labels"
-  - "Support screen readers"
-  - "Provide alternative text for images"
-  - "Use proper contrast ratios"
-  - "Support keyboard navigation"
-  - "Clear visual feedback for card interactions"
+### Healing System
+- **Healing Cards**: Restore player health
+- **Health Limits**: Cannot exceed maximum health
+- **Healing Sources**: Cards, camp rest, shrine blessings
 
-# Game Mechanics Rules
-mechanics:
-  # Turn System
-  turn_system:
-    - "Player turn: play cards, end turn"
-    - "Enemy turn: enemy performs actions"
-    - "Turn counter increments each cycle"
-    - "Energy resets to max at start of player turn"
-  
-  # Battle System
-  battle_system:
-    - "Enemies have health, damage, and abilities"
-    - "Player has health, energy, block, and strength"
-    - "Cards can deal damage, provide block, or grant effects"
-    - "Battle ends when enemy or player health reaches 0"
-  
-  # Card System
-  card_system:
-    - "Cards have energy cost, damage, block, and effects"
-    - "Cards can have multiple hits"
-    - "Cards can grant temporary strength"
-    - "Cards are played from hand using energy"
-    - "Played cards go to discard pile"
-  
-  # Equipment System
-  equipment_system:
-    - "Equipment provides cards to deck"
-    - "Equipment can be switched but not unequipped"
-    - "Equipment affects player capabilities"
-    - "Equipment can be found in events or shops"
-    - "Equipment has visual grading system"
-  
-  # Grading System
-  grading_system:
-    - "Equipment and cards have rarity grades"
-    - "Grades: Common (Gray), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Orange)"
-    - "Grade affects border color and visual appearance"
-    - "Grade badges shown for uncommon+ items"
-    - "Basic equipment starts with common grade"
-    - "Higher grade equipment provides better cards"
-    - "Grade doesn't limit card power - basic equipment can have powerful cards"
+### Draw System
+- **Draw Cards**: Some cards allow drawing additional cards
+- **Draw Limits**: Respects hand size limits
+- **Draw Effects**: Immediate card draw during turn
+
+## UI/UX Features
+
+### Visual Grading System
+- **Grade Colors**: 
+  - Common: Gray (#9E9E9E)
+  - Uncommon: Green (#4CAF50)
+  - Rare: Blue (#2196F3)
+  - Epic: Purple (#9C27B0)
+  - Legendary: Orange (#FF9800)
+- **Grade Display**: Badges on equipment and cards (uncommon+)
+- **Shop Integration**: Grade badges shown in shop items
+
+### Deck Viewer
+- **Complete Overview**: Shows all cards from all equipped equipment
+- **Equipment Grouping**: Cards organized by source equipment
+- **Slot Information**: Clear labels showing equipment slots
+- **Card Counts**: Total deck size and per-equipment counts
+- **Grade Display**: Equipment grades shown with colored badges
+
+### Shop System
+- **Item Types**: Cards, Equipment, Items, Potions
+- **Grade Display**: Equipment and cards show grade badges
+- **Price System**: Gold-based purchasing
+- **Item Categories**: Battle-usable items marked
+
+## Game Balance
+
+### Player Stats
+- **Starting Health**: 80 HP
+- **Starting Energy**: 3 per turn
+- **Starting Gold**: 100
+- **Max Hand Size**: 5 cards
+
+### Equipment Balance
+- **Default Equipment**: All common-grade for meaningful progression
+- **Equipment Slots**: 7 total slots for deck building
+- **Card Distribution**: Varies by equipment grade and type
+
+### Card Balance
+- **Energy Costs**: 0-3 energy per card
+- **Damage Range**: 3-20 damage
+- **Block Range**: 3-15 block
+- **Healing Range**: 3-20 HP
+- **Draw Effects**: 1-3 cards
+- **Energy Gain**: 1-2 energy
+
+## Technical Implementation
+
+### State Management
+- **Game State**: Player stats, equipment, deck, hand, path
+- **Battle State**: Enemy, turn counter, battle log
+- **Persistent Storage**: Game progress saved between sessions
+
+### Card Effects Implementation
+- **Damage System**: Applied with strength bonuses and enemy block
+- **Healing System**: Applied with health limits
+- **Energy System**: Applied with energy limits
+- **Draw System**: Immediate card drawing with hand size limits
+- **Block System**: Temporary damage reduction
+
+### Equipment Management
+- **Slot System**: 7 equipment slots with type restrictions
+- **Deck Rebuilding**: Automatic deck reconstruction when equipment changes
+- **Equipment Switching**: Seamless equipment replacement
+
+## Recent Updates
+
+### Deck Viewer Improvements
+- **Complete Deck View**: Shows all cards from all equipment
+- **Equipment Grouping**: Cards organized by source equipment
+- **Slot Labels**: Clear indication of equipment slots
+- **Grade Display**: Equipment grades with colored badges
+- **Card Counts**: Total and per-equipment card counts
+
+### Card System Enhancements
+- **Energy Gain**: Cards can provide additional energy
+- **Draw Effects**: Cards can draw additional cards
+- **Healing System**: Cards can restore player health
+- **Visual Feedback**: All effects logged in battle log
+
+### Shop Improvements
+- **Grade Display**: Equipment and cards show grade badges
+- **Visual Consistency**: Grade colors match equipment system
+- **Item Information**: Clear display of item properties
+
+### Battle System Fixes
+- **Energy Drink**: Now properly provides energy when played
+- **Draw Cards**: Reality Warp and Quick Step now properly draw cards
+- **Healing Cards**: Now properly restore player health
+- **Effect Logging**: All card effects properly logged in battle log

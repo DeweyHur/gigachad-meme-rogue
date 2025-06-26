@@ -10,7 +10,7 @@ type CardProps = {
 };
 
 export default function Card({ card, onPress, disabled = false }: CardProps) {
-  const { name, damage, block, energy, description, upgraded, hits, strength, grade } = card;
+  const { name, damage, block, heal, energy, energyGain, description, upgraded, hits, strength, grade } = card;
   const [showDetails, setShowDetails] = useState(false);
   
   const handleLongPress = () => {
@@ -54,9 +54,19 @@ export default function Card({ card, onPress, disabled = false }: CardProps) {
               Block: <Text style={styles.blockText}>{block}</Text>
             </Text>
           )}
+          {heal && (
+            <Text style={styles.statText}>
+              Heal: <Text style={styles.healText}>{heal} HP</Text>
+            </Text>
+          )}
           {strength && (
             <Text style={styles.statText}>
               Strength: <Text style={styles.strengthText}>+{strength}</Text>
+            </Text>
+          )}
+          {energyGain && (
+            <Text style={styles.statText}>
+              Energy: <Text style={styles.energyGainText}>+{energyGain}</Text>
             </Text>
           )}
           <Text style={styles.description}>{description}</Text>
@@ -106,10 +116,24 @@ export default function Card({ card, onPress, disabled = false }: CardProps) {
                 </View>
               )}
               
+              {heal && (
+                <View style={styles.modalStatItem}>
+                  <Text style={styles.modalStatLabel}>Heal:</Text>
+                  <Text style={styles.modalHealValue}>{heal} HP</Text>
+                </View>
+              )}
+              
               {strength && (
                 <View style={styles.modalStatItem}>
                   <Text style={styles.modalStatLabel}>Strength:</Text>
                   <Text style={styles.modalStrengthValue}>+{strength}</Text>
+                </View>
+              )}
+              
+              {energyGain && (
+                <View style={styles.modalStatItem}>
+                  <Text style={styles.modalStatLabel}>Energy:</Text>
+                  <Text style={styles.modalEnergyGainValue}>+{energyGain}</Text>
                 </View>
               )}
             </View>
@@ -190,7 +214,15 @@ const styles = StyleSheet.create({
     color: COLORS.info,
     fontWeight: 'bold',
   },
+  healText: {
+    color: COLORS.success,
+    fontWeight: 'bold',
+  },
   strengthText: {
+    color: COLORS.success,
+    fontWeight: 'bold',
+  },
+  energyGainText: {
     color: COLORS.success,
     fontWeight: 'bold',
   },
@@ -283,7 +315,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  modalHealValue: {
+    color: COLORS.success,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   modalStrengthValue: {
+    color: COLORS.success,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalEnergyGainValue: {
     color: COLORS.success,
     fontSize: 16,
     fontWeight: 'bold',

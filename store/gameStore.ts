@@ -677,6 +677,60 @@ export const useGameStore = create<GameStore>()(
           );
         }
         
+        // Apply healing
+        if (card.heal) {
+          const oldHealth = updatedPlayer.health;
+          updatedPlayer.health = Math.min(updatedPlayer.maxHealth, updatedPlayer.health + card.heal);
+          const actualHeal = updatedPlayer.health - oldHealth;
+          
+          if (actualHeal > 0) {
+            updatedBattleLog = addBattleLogEntry(
+              updatedBattleLog,
+              'heal',
+              'player',
+              'player',
+              actualHeal,
+              `Healed for ${actualHeal} HP`
+            );
+          }
+        }
+        
+        // Apply energy gain
+        if (card.energyGain) {
+          const oldEnergy = updatedPlayer.energy;
+          updatedPlayer.energy = Math.min(updatedPlayer.maxEnergy, updatedPlayer.energy + card.energyGain);
+          const actualEnergyGain = updatedPlayer.energy - oldEnergy;
+          
+          if (actualEnergyGain > 0) {
+            updatedBattleLog = addBattleLogEntry(
+              updatedBattleLog,
+              'effect',
+              'player',
+              'player',
+              actualEnergyGain,
+              `Gained ${actualEnergyGain} energy`
+            );
+          }
+        }
+        
+        // Apply draw
+        if (card.draw) {
+          let tempState = { ...gameState, player: updatedPlayer };
+          tempState = drawCards(card.draw, tempState);
+          const actualDraw = tempState.player.hand.length - updatedPlayer.hand.length;
+          updatedPlayer = tempState.player;
+          if (actualDraw > 0) {
+            updatedBattleLog = addBattleLogEntry(
+              updatedBattleLog,
+              'effect',
+              'player',
+              'player',
+              actualDraw,
+              `Drew ${actualDraw} card${actualDraw > 1 ? 's' : ''}`
+            );
+          }
+        }
+        
         // Check for battle end
         let gameStatus = gameState.gameStatus;
         let showVictoryEffect = false;

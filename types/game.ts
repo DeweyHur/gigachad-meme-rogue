@@ -3,7 +3,10 @@ export type CardType = {
   name: string;
   damage?: number;
   block?: number;
+  heal?: number;
   energy: number;
+  energyGain?: number;
+  draw?: number;
   description: string;
   hits?: number;
   strength?: number;
