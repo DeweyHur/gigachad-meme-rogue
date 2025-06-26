@@ -7,7 +7,7 @@ import { useGameStore } from '@/store/gameStore';
 import GameMap from '@/components/GameMap';
 import Player from '@/components/Player';
 import EventCard from '@/components/EventCard';
-import { SHOP_ITEMS } from '@/constants/game';
+import { SHOP_ITEMS, EVENTS } from '@/constants/game';
 import ShopItem from '@/components/ShopItem';
 import NodePreview from '@/components/NodePreview';
 import RewardPopup from '@/components/RewardPopup';
@@ -29,6 +29,7 @@ export default function GameScreen() {
     useItem,
     healPlayer,
     clearLastReward,
+    triggerShrineEvent,
   } = useGameStore();
   
   const { 
@@ -119,17 +120,11 @@ export default function GameScreen() {
             <Pressable 
               style={styles.shrineButton} 
               onPress={() => {
-                // Random buff
-                const buffs = [
-                  () => healPlayer(15),
-                  () => healPlayer(20),
-                  () => player.gold += 50,
-                ];
-                buffs[Math.floor(Math.random() * buffs.length)]();
-                moveToNode('start');
+                // Trigger the shrine event instead of random buff
+                triggerShrineEvent();
               }}
             >
-              <Text style={styles.buttonText}>Pray for Blessing</Text>
+              <Text style={styles.buttonText}>Approach the Shrine</Text>
             </Pressable>
             
             <Pressable style={styles.backButton} onPress={() => moveToNode('start')}>

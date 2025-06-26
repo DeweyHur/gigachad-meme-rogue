@@ -6,12 +6,12 @@ export const GAME_CONFIG = {
   pathHeight: 7, // Including start and boss nodes
   nodeTypes: ['battle', 'shop', 'event', 'camp', 'shrine', 'blacksmith'],
   nodeWeights: {
-    battle: 0.7,
-    shop: 0.05,
-    event: 0.1,
+    battle: 0.5,
+    shop: 0.1,
+    event: 0.15,
     camp: 0.05,
-    shrine: 0.05,
-    blacksmith: 0.05,
+    shrine: 0.1,
+    blacksmith: 0.1,
   },
 };
 
@@ -334,9 +334,9 @@ export const EVENTS = [
     title: 'Ancient Shrine',
     description: 'You discover an ancient shrine dedicated to forgotten memes.',
     options: [
-      { text: 'Pray for strength', effect: { type: 'buff', stat: 'strength', value: 2 } },
-      { text: 'Pray for protection', effect: { type: 'buff', stat: 'maxHealth', value: 10 } },
-      { text: 'Desecrate the shrine', effect: { type: 'random', good: { gold: 50 }, bad: { curse: 'Meme Curse' } } },
+      { text: 'Pray for strength (+2 permanent strength)', effect: { type: 'buff', stat: 'strength', value: 2 } },
+      { text: 'Pray for protection (+10 max HP)', effect: { type: 'buff', stat: 'maxHealth', value: 10 } },
+      { text: 'Desecrate the shrine (50% chance: +50 gold or curse)', effect: { type: 'random', good: { gold: 50 }, bad: { curse: 'Meme Curse' } } },
     ]
   },
   {

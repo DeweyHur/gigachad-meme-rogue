@@ -322,6 +322,7 @@ type GameStore = {
   resetGame: () => void;
   hideVictoryEffect: () => void;
   clearLastReward: () => void;
+  triggerShrineEvent: () => void;
 };
 
 export const useGameStore = create<GameStore>()(
@@ -1263,6 +1264,9 @@ export const useGameStore = create<GameStore>()(
               };
             }
             break;
+          case 'none':
+            // Do nothing, just close the event
+            break;
         }
         
         set({
@@ -1566,6 +1570,20 @@ export const useGameStore = create<GameStore>()(
       
       resetGame: () => {
         set({ gameState: initializeGameState('tralalero') });
+      },
+      
+      triggerShrineEvent: () => {
+        const { gameState } = get();
+        const shrineEvent = EVENTS.find(event => event.id === 'ancient_shrine');
+        if (shrineEvent) {
+          set({
+            gameState: {
+              ...gameState,
+              currentEvent: shrineEvent,
+              gameStatus: 'event',
+            },
+          });
+        }
       },
     }),
     {
