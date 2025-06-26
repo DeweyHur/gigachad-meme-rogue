@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # MDC (Model-Driven Configuration) Rule for Gigachad Meme Rogue
 
@@ -42,25 +42,52 @@ game:
   balance:
     - "Player starting health: 80"
     - "Player starting energy: 3"
-    - "Max hand size: 3"
+    - "Max hand size: 5"
     - "Path height: 7 nodes"
     - "Max path width: 4 nodes"
   
+  # Hand System Rules
+  hand_system:
+    - "Every turn: discard all cards in hand"
+    - "Redraw up to max hand size (3 cards)"
+    - "Respect perks that modify hand size"
+    - "No cards left in hand at end of turn"
+  
   # Node Distribution Rules
   nodes:
-    battle: 0.5
-    shop: 0.15
-    event: 0.15
-    camp: 0.1
+    battle: 0.7
+    shop: 0.05
+    event: 0.1
+    camp: 0.05
     shrine: 0.05
     blacksmith: 0.05
   
   # Equipment Rules
   equipment:
-    - "Each equipment provides cards"
-    - "Cards have energy costs"
-    - "Equipment affects player stats"
-    - "Equipment can be upgraded"
+    - "All equipment slots start equipped with defaults"
+    - "Players can only switch equipment, never unequip"
+    - "Each equipment provides cards to the deck"
+    - "Cards have energy costs and effects"
+    - "Equipment affects player stats and abilities"
+    - "Equipment can be upgraded at blacksmith"
+  
+  # Default Equipment Configuration
+  default_equipment:
+    weapon: "Gigachad Fists (Common)"
+    head: "Basic Hat (Common)"
+    offhand: "Basic Shield (Common)"
+    chest: "Six-Pack Abs Armor (Common)"
+    feet: "Basic Shoes (Common)"
+    accessory1: "Protein Shake Necklace (Common)"
+    accessory2: "Basic Ring (Common)"
+  
+  # Deck Building Rules
+  deck_building:
+    - "Deck is built from all equipped equipment"
+    - "Starting deck includes cards from all 7 equipment slots"
+    - "Deck is shuffled at start of each battle"
+    - "Cards are drawn from draw pile, discarded to discard pile"
+    - "When draw pile is empty, shuffle discard pile into draw pile"
 
 # UI/UX Rules
 ui:
@@ -72,6 +99,7 @@ ui:
     text: "#ECF0F1"
     success: "#27AE60"
     error: "#E74C3C"
+    cardBackground: "#34495E"
   
   # Component Rules
   components:
@@ -80,6 +108,11 @@ ui:
     - "Implement proper touch targets"
     - "Use proper contrast ratios"
     - "Support dark/light themes"
+    - "Show hand size in battle UI"
+    - "Display equipment slots with current equipment"
+    - "Use graded borders for equipment and cards"
+    - "Show grade badges for uncommon+ items"
+    - "Grade colors: Common (Gray), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Orange)"
 
 # Performance Rules
 performance:
@@ -88,6 +121,7 @@ performance:
   - "Lazy load components when possible"
   - "Optimize images and assets"
   - "Minimize bundle size"
+  - "Efficient card drawing and shuffling"
 
 # Testing Rules
 testing:
@@ -95,6 +129,8 @@ testing:
   - "Test state management functions"
   - "Test component rendering"
   - "Test user interactions"
+  - "Test hand system (discard and redraw)"
+  - "Test equipment switching functionality"
 
 # Deployment Rules
 deployment:
@@ -118,3 +154,46 @@ accessibility:
   - "Provide alternative text for images"
   - "Use proper contrast ratios"
   - "Support keyboard navigation"
+  - "Clear visual feedback for card interactions"
+
+# Game Mechanics Rules
+mechanics:
+  # Turn System
+  turn_system:
+    - "Player turn: play cards, end turn"
+    - "Enemy turn: enemy performs actions"
+    - "Turn counter increments each cycle"
+    - "Energy resets to max at start of player turn"
+  
+  # Battle System
+  battle_system:
+    - "Enemies have health, damage, and abilities"
+    - "Player has health, energy, block, and strength"
+    - "Cards can deal damage, provide block, or grant effects"
+    - "Battle ends when enemy or player health reaches 0"
+  
+  # Card System
+  card_system:
+    - "Cards have energy cost, damage, block, and effects"
+    - "Cards can have multiple hits"
+    - "Cards can grant temporary strength"
+    - "Cards are played from hand using energy"
+    - "Played cards go to discard pile"
+  
+  # Equipment System
+  equipment_system:
+    - "Equipment provides cards to deck"
+    - "Equipment can be switched but not unequipped"
+    - "Equipment affects player capabilities"
+    - "Equipment can be found in events or shops"
+    - "Equipment has visual grading system"
+  
+  # Grading System
+  grading_system:
+    - "Equipment and cards have rarity grades"
+    - "Grades: Common (Gray), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Orange)"
+    - "Grade affects border color and visual appearance"
+    - "Grade badges shown for uncommon+ items"
+    - "Basic equipment starts with common grade"
+    - "Higher grade equipment provides better cards"
+    - "Grade doesn't limit card power - basic equipment can have powerful cards"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { COLORS, getGradeColor } from '@/constants/colors';
 import { CardType } from '@/types/game';
 
 type CardProps = {
@@ -10,7 +10,7 @@ type CardProps = {
 };
 
 export default function Card({ card, onPress, disabled = false }: CardProps) {
-  const { name, damage, block, energy, description, upgraded, hits, strength } = card;
+  const { name, damage, block, energy, description, upgraded, hits, strength, grade } = card;
   const [showDetails, setShowDetails] = useState(false);
   
   const handleLongPress = () => {
@@ -21,11 +21,14 @@ export default function Card({ card, onPress, disabled = false }: CardProps) {
     setShowDetails(false);
   };
   
+  const gradeColor = getGradeColor(grade);
+  
   return (
     <>
       <Pressable 
         style={[
           styles.container, 
+          { borderColor: gradeColor },
           disabled && styles.disabled
         ]} 
         onPress={onPress}
@@ -58,6 +61,12 @@ export default function Card({ card, onPress, disabled = false }: CardProps) {
           )}
           <Text style={styles.description}>{description}</Text>
         </View>
+        
+        {grade && grade !== 'common' && (
+          <View style={[styles.gradeBadge, { backgroundColor: gradeColor }]}>
+            <Text style={styles.gradeText}>{grade.toUpperCase()}</Text>
+          </View>
+        )}
         
         {upgraded && (
           <View style={styles.upgradeBadge}>
@@ -128,7 +137,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBackground,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: COLORS.cardBorder,
     padding: 10,
     margin: 5,
     shadowColor: '#000',
@@ -303,5 +311,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginTop: 10,
+  },
+  gradeBadge: {
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 8,
+    minWidth: 20,
+    alignItems: 'center',
+  },
+  gradeText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 8,
   },
 });

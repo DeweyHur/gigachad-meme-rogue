@@ -1,15 +1,15 @@
 export const GAME_CONFIG = {
   playerStartingHealth: 80,
   playerStartingEnergy: 3,
-  maxHandSize: 3,
+  maxHandSize: 5,
   maxPathWidth: 4,
   pathHeight: 7, // Including start and boss nodes
   nodeTypes: ['battle', 'shop', 'event', 'camp', 'shrine', 'blacksmith'],
   nodeWeights: {
-    battle: 0.5,
-    shop: 0.15,
-    event: 0.15,
-    camp: 0.1,
+    battle: 0.7,
+    shop: 0.05,
+    event: 0.1,
+    camp: 0.05,
     shrine: 0.05,
     blacksmith: 0.05,
   },
@@ -90,10 +90,11 @@ export const EQUIPMENT = [
     description: 'Your natural weapons. Simple but effective.',
     image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=300',
     slot: 'weapon' as EquipmentSlotType,
+    grade: 'common' as const,
     cards: [
-      { id: 'punch', name: 'Punch', damage: 6, energy: 1, description: 'Deal 6 damage', quantity: 4 },
-      { id: 'block', name: 'Block', block: 5, energy: 1, description: 'Gain 5 block', quantity: 4 },
-      { id: 'flex', name: 'Flex', strength: 2, energy: 1, description: 'Gain 2 strength for this turn', quantity: 2 },
+      { id: 'punch', name: 'Punch', damage: 6, energy: 1, description: 'Deal 6 damage', quantity: 4, grade: 'common' as const },
+      { id: 'block', name: 'Block', block: 5, energy: 1, description: 'Gain 5 block', quantity: 4, grade: 'common' as const },
+      { id: 'flex', name: 'Flex', strength: 2, energy: 1, description: 'Gain 2 strength for this turn', quantity: 2, grade: 'uncommon' as const },
     ]
   },
   {
@@ -102,11 +103,12 @@ export const EQUIPMENT = [
     description: 'Harness the power of the cosmos.',
     image: 'https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=300',
     slot: 'offhand' as EquipmentSlotType,
+    grade: 'legendary' as const,
     cards: [
-      { id: 'finger_snap', name: 'Finger Snap', damage: 20, energy: 3, description: 'Deal 20 damage to all enemies', quantity: 1 },
-      { id: 'power_bash', name: 'Power Bash', damage: 10, energy: 1, description: 'Deal 10 damage', quantity: 2 },
-      { id: 'cosmic_shield', name: 'Cosmic Shield', block: 8, energy: 1, description: 'Gain 8 block', quantity: 3 },
-      { id: 'reality_warp', name: 'Reality Warp', energy: 2, description: 'Draw 3 cards', quantity: 1 },
+      { id: 'finger_snap', name: 'Finger Snap', damage: 20, energy: 3, description: 'Deal 20 damage to all enemies', quantity: 1, grade: 'legendary' as const },
+      { id: 'power_bash', name: 'Power Bash', damage: 10, energy: 1, description: 'Deal 10 damage', quantity: 2, grade: 'rare' as const },
+      { id: 'cosmic_shield', name: 'Cosmic Shield', block: 8, energy: 1, description: 'Gain 8 block', quantity: 3, grade: 'uncommon' as const },
+      { id: 'reality_warp', name: 'Reality Warp', energy: 2, description: 'Draw 3 cards', quantity: 1, grade: 'epic' as const },
     ]
   },
   {
@@ -115,11 +117,12 @@ export const EQUIPMENT = [
     description: 'Enhance your coolness factor to damaging levels.',
     image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=300',
     slot: 'head' as EquipmentSlotType,
+    grade: 'uncommon' as const,
     cards: [
-      { id: 'cool_stare', name: 'Cool Stare', damage: 8, energy: 1, description: 'Deal 8 damage and apply 2 weak', quantity: 3 },
-      { id: 'shade_block', name: 'Shade Block', block: 7, energy: 1, description: 'Gain 7 block', quantity: 3 },
-      { id: 'meme_power', name: 'Meme Power', strength: 3, energy: 2, description: 'Gain 3 strength for this turn', quantity: 2 },
-      { id: 'deal_with_it', name: 'Deal With It', damage: 15, energy: 2, description: 'Deal 15 damage. If enemy is weak, deal 20 instead', quantity: 1 },
+      { id: 'cool_stare', name: 'Cool Stare', damage: 8, energy: 1, description: 'Deal 8 damage and apply 2 weak', quantity: 3, grade: 'uncommon' as const },
+      { id: 'shade_block', name: 'Shade Block', block: 7, energy: 1, description: 'Gain 7 block', quantity: 3, grade: 'common' as const },
+      { id: 'meme_power', name: 'Meme Power', strength: 3, energy: 2, description: 'Gain 3 strength for this turn', quantity: 2, grade: 'rare' as const },
+      { id: 'deal_with_it', name: 'Deal With It', damage: 15, energy: 2, description: 'Deal 15 damage. If enemy is weak, deal 20 instead', quantity: 1, grade: 'epic' as const },
     ]
   },
   {
@@ -128,11 +131,12 @@ export const EQUIPMENT = [
     description: 'A mighty blade forged from pure testosterone.',
     image: 'https://images.unsplash.com/photo-1590419690008-905895e8fe0d?q=80&w=300',
     slot: 'weapon' as EquipmentSlotType,
+    grade: 'rare' as const,
     cards: [
-      { id: 'slash', name: 'Slash', damage: 9, energy: 1, description: 'Deal 9 damage', quantity: 3 },
-      { id: 'parry', name: 'Parry', block: 9, energy: 1, description: 'Gain 9 block', quantity: 3 },
-      { id: 'double_strike', name: 'Double Strike', damage: 6, hits: 2, energy: 2, description: 'Deal 6 damage twice', quantity: 2 },
-      { id: 'gigachad_stance', name: 'Gigachad Stance', energy: 2, description: 'Gain 4 strength and 4 block', quantity: 1 },
+      { id: 'slash', name: 'Slash', damage: 9, energy: 1, description: 'Deal 9 damage', quantity: 3, grade: 'common' as const },
+      { id: 'parry', name: 'Parry', block: 9, energy: 1, description: 'Gain 9 block', quantity: 3, grade: 'uncommon' as const },
+      { id: 'double_strike', name: 'Double Strike', damage: 6, hits: 2, energy: 2, description: 'Deal 6 damage twice', quantity: 2, grade: 'rare' as const },
+      { id: 'gigachad_stance', name: 'Gigachad Stance', energy: 2, description: 'Gain 4 strength and 4 block', quantity: 1, grade: 'epic' as const },
     ]
   },
   {
@@ -141,10 +145,11 @@ export const EQUIPMENT = [
     description: 'Natural armor that makes enemies jealous.',
     image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=300',
     slot: 'chest' as EquipmentSlotType,
+    grade: 'common' as const,
     cards: [
-      { id: 'flex_defense', name: 'Flex Defense', block: 10, energy: 1, description: 'Gain 10 block', quantity: 3 },
-      { id: 'intimidate', name: 'Intimidate', energy: 1, description: 'Enemy loses 2 strength this turn', quantity: 2 },
-      { id: 'taunt', name: 'Taunt', energy: 1, description: 'Apply 3 weak to enemy', quantity: 2 },
+      { id: 'flex_defense', name: 'Flex Defense', block: 10, energy: 1, description: 'Gain 10 block', quantity: 3, grade: 'common' as const },
+      { id: 'intimidate', name: 'Intimidate', energy: 1, description: 'Enemy loses 2 strength this turn', quantity: 2, grade: 'uncommon' as const },
+      { id: 'taunt', name: 'Taunt', energy: 1, description: 'Apply 3 weak to enemy', quantity: 2, grade: 'uncommon' as const },
     ]
   },
   {
@@ -153,10 +158,11 @@ export const EQUIPMENT = [
     description: 'Never skip leg day. These boots increase your mobility.',
     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300',
     slot: 'feet' as EquipmentSlotType,
+    grade: 'uncommon' as const,
     cards: [
-      { id: 'quick_step', name: 'Quick Step', energy: 0, description: 'Draw 1 card', quantity: 2 },
-      { id: 'leg_sweep', name: 'Leg Sweep', damage: 5, energy: 1, description: 'Deal 5 damage and gain 5 block', quantity: 3 },
-      { id: 'run_away', name: 'Tactical Retreat', block: 12, energy: 2, description: 'Gain 12 block', quantity: 2 },
+      { id: 'quick_step', name: 'Quick Step', energy: 0, description: 'Draw 1 card', quantity: 2, grade: 'rare' as const },
+      { id: 'leg_sweep', name: 'Leg Sweep', damage: 5, energy: 1, description: 'Deal 5 damage and gain 5 block', quantity: 3, grade: 'uncommon' as const },
+      { id: 'run_away', name: 'Tactical Retreat', block: 12, energy: 2, description: 'Gain 12 block', quantity: 2, grade: 'common' as const },
     ]
   },
   {
@@ -165,10 +171,11 @@ export const EQUIPMENT = [
     description: 'A vial of pure protein always at the ready.',
     image: 'https://images.unsplash.com/photo-1535556116002-6281ff3e9f36?q=80&w=300',
     slot: 'accessory1' as EquipmentSlotType,
+    grade: 'common' as const,
     cards: [
-      { id: 'protein_boost', name: 'Protein Boost', strength: 1, energy: 1, description: 'Gain 1 permanent strength', quantity: 1 },
-      { id: 'quick_sip', name: 'Quick Sip', energy: 1, description: 'Heal 5 HP', quantity: 2 },
-      { id: 'energy_drink', name: 'Energy Drink', energy: 0, description: 'Gain 2 energy', quantity: 1 },
+      { id: 'protein_boost', name: 'Protein Boost', strength: 1, energy: 1, description: 'Gain 1 permanent strength', quantity: 1, grade: 'epic' as const },
+      { id: 'quick_sip', name: 'Quick Sip', energy: 1, description: 'Heal 5 HP', quantity: 2, grade: 'uncommon' as const },
+      { id: 'energy_drink', name: 'Energy Drink', energy: 0, description: 'Gain 2 energy', quantity: 1, grade: 'rare' as const },
     ]
   },
   {
@@ -177,10 +184,59 @@ export const EQUIPMENT = [
     description: 'Contains the power of a thousand memes.',
     image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=300',
     slot: 'accessory2' as EquipmentSlotType,
+    grade: 'rare' as const,
     cards: [
-      { id: 'meme_reference', name: 'Obscure Reference', damage: 12, energy: 2, description: 'Deal 12 damage. If enemy is confused, deal 18 instead', quantity: 2 },
-      { id: 'viral_content', name: 'Viral Content', energy: 1, description: 'Apply 3 vulnerable to enemy', quantity: 2 },
-      { id: 'repost', name: 'Repost', energy: 1, description: 'Copy the last card you played into your hand', quantity: 1 },
+      { id: 'meme_reference', name: 'Obscure Reference', damage: 12, energy: 2, description: 'Deal 12 damage. If enemy is confused, deal 18 instead', quantity: 2, grade: 'rare' as const },
+      { id: 'viral_content', name: 'Viral Content', energy: 1, description: 'Apply 3 vulnerable to enemy', quantity: 2, grade: 'uncommon' as const },
+      { id: 'repost', name: 'Repost', energy: 1, description: 'Copy the last card you played into your hand', quantity: 1, grade: 'epic' as const },
+    ]
+  },
+  {
+    id: 'basic_hat',
+    name: 'Basic Hat',
+    description: 'A simple hat for basic protection.',
+    image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=300',
+    slot: 'head' as EquipmentSlotType,
+    grade: 'common' as const,
+    cards: [
+      { id: 'headbutt', name: 'Headbutt', damage: 4, energy: 1, description: 'Deal 4 damage', quantity: 3, grade: 'common' as const },
+      { id: 'duck', name: 'Duck', block: 4, energy: 1, description: 'Gain 4 block', quantity: 3, grade: 'common' as const },
+    ]
+  },
+  {
+    id: 'basic_shield',
+    name: 'Basic Shield',
+    description: 'A simple wooden shield for basic defense.',
+    image: 'https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=300',
+    slot: 'offhand' as EquipmentSlotType,
+    grade: 'common' as const,
+    cards: [
+      { id: 'shield_bash', name: 'Shield Bash', damage: 3, energy: 1, description: 'Deal 3 damage', quantity: 3, grade: 'common' as const },
+      { id: 'shield_block', name: 'Shield Block', block: 6, energy: 1, description: 'Gain 6 block', quantity: 3, grade: 'common' as const },
+    ]
+  },
+  {
+    id: 'basic_shoes',
+    name: 'Basic Shoes',
+    description: 'Simple shoes for basic mobility.',
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300',
+    slot: 'feet' as EquipmentSlotType,
+    grade: 'common' as const,
+    cards: [
+      { id: 'kick', name: 'Kick', damage: 5, energy: 1, description: 'Deal 5 damage', quantity: 3, grade: 'common' as const },
+      { id: 'step_back', name: 'Step Back', block: 3, energy: 1, description: 'Gain 3 block', quantity: 3, grade: 'common' as const },
+    ]
+  },
+  {
+    id: 'basic_ring',
+    name: 'Basic Ring',
+    description: 'A simple ring with basic magical properties.',
+    image: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?q=80&w=300',
+    slot: 'accessory2' as EquipmentSlotType,
+    grade: 'common' as const,
+    cards: [
+      { id: 'magic_spark', name: 'Magic Spark', damage: 4, energy: 1, description: 'Deal 4 damage', quantity: 2, grade: 'common' as const },
+      { id: 'basic_heal', name: 'Basic Heal', energy: 1, description: 'Heal 3 HP', quantity: 2, grade: 'common' as const },
     ]
   }
 ];

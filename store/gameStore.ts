@@ -227,21 +227,38 @@ const addBattleLogEntry = (
 };
 
 const initializeGameState = (bossId: string): GameStateType => {
-  // Starting equipment
+  // Starting equipment - equip all slots with Common defaults
   const startingWeapon = EQUIPMENT.find(eq => eq.id === 'fists') as EquipmentType;
-  const startingHead = EQUIPMENT.find(eq => eq.id === 'sunglasses') as EquipmentType;
+  const startingHead = EQUIPMENT.find(eq => eq.id === 'basic_hat') as EquipmentType;
+  const startingOffhand = EQUIPMENT.find(eq => eq.id === 'basic_shield') as EquipmentType;
+  const startingChest = EQUIPMENT.find(eq => eq.id === 'abs_armor') as EquipmentType;
+  const startingFeet = EQUIPMENT.find(eq => eq.id === 'basic_shoes') as EquipmentType;
+  const startingAccessory1 = EQUIPMENT.find(eq => eq.id === 'protein_necklace') as EquipmentType;
+  const startingAccessory2 = EQUIPMENT.find(eq => eq.id === 'basic_ring') as EquipmentType;
   
-  // Set up equipped items
+  // Set up equipped items - all slots equipped with Common gear
   const equippedItems: EquippedItemsType = {
     weapon: startingWeapon.id,
-    head: startingHead.id
+    head: startingHead.id,
+    offhand: startingOffhand.id,
+    chest: startingChest.id,
+    feet: startingFeet.id,
+    accessory1: startingAccessory1.id,
+    accessory2: startingAccessory2.id,
   };
   
-  // Create deck from equipped items
-  const deck = createDeckFromEquippedItems(
-    [startingWeapon, startingHead], 
-    equippedItems
-  );
+  // Create deck from all equipped items
+  const allStartingEquipment = [
+    startingWeapon, 
+    startingHead, 
+    startingOffhand, 
+    startingChest, 
+    startingFeet, 
+    startingAccessory1, 
+    startingAccessory2
+  ];
+  
+  const deck = createDeckFromEquippedItems(allStartingEquipment, equippedItems);
   const shuffledDeck = shuffleDeck(deck);
   
   // Starting items
@@ -256,7 +273,7 @@ const initializeGameState = (bossId: string): GameStateType => {
       energy: GAME_CONFIG.playerStartingEnergy,
       maxEnergy: GAME_CONFIG.playerStartingEnergy,
       gold: 100,
-      equipment: [startingWeapon, startingHead],
+      equipment: allStartingEquipment,
       equippedItems: equippedItems,
       items: startingItems,
       deck: deck,
@@ -297,7 +314,6 @@ type GameStore = {
   resolveEvent: (optionIndex: number) => void;
   buyItem: (itemIndex: number) => void;
   equipItem: (equipmentId: string, slot: EquipmentSlotType) => void;
-  unequipItem: (slot: EquipmentSlotType) => void;
   acquireEquipment: (equipment: EquipmentType) => void;
   useItem: (itemId: string) => void;
   healPlayer: (amount: number) => void;
@@ -841,18 +857,18 @@ export const useGameStore = create<GameStore>()(
             `--- Turn ${newTurn} - Player Turn ---`
           );
           
-          // Draw new hand and reset energy
-          const updatedState = drawCards(5, {
-            ...updatedGameState,
-            player: {
-              ...updatedGameState.player,
-              energy: updatedGameState.player.maxEnergy
-            }
-          });
+          // Discard all cards and redraw up to max hand size
+          const updatedPlayer = {
+            ...updatedGameState.player,
+            energy: updatedGameState.player.maxEnergy,
+            discardPile: [...updatedGameState.player.discardPile, ...updatedGameState.player.hand],
+            hand: [],
+          };
           
           set({
             gameState: {
-              ...updatedState,
+              ...updatedGameState,
+              player: updatedPlayer,
               currentBattle: {
                 ...updatedGameState.currentBattle,
                 turn: newTurn,
@@ -861,6 +877,9 @@ export const useGameStore = create<GameStore>()(
               },
             },
           });
+          
+          // Draw new hand up to max hand size
+          get().drawNewHand();
         }
       },
       
@@ -1305,32 +1324,6 @@ export const useGameStore = create<GameStore>()(
           ...player.equippedItems,
           [slot]: equipmentId
         };
-        
-        // Rebuild deck from all equipped items
-        const newDeck = createDeckFromEquippedItems(player.equipment, updatedEquippedItems);
-        
-        set({
-          gameState: {
-            ...gameState,
-            player: {
-              ...player,
-              equippedItems: updatedEquippedItems,
-              deck: newDeck,
-              hand: [],
-              drawPile: shuffleDeck(newDeck),
-              discardPile: [],
-            },
-          },
-        });
-      },
-      
-      unequipItem: (slot: EquipmentSlotType) => {
-        const { gameState } = get();
-        const { player } = gameState;
-        
-        // Update equipped items
-        const updatedEquippedItems = { ...player.equippedItems };
-        delete updatedEquippedItems[slot];
         
         // Rebuild deck from all equipped items
         const newDeck = createDeckFromEquippedItems(player.equipment, updatedEquippedItems);

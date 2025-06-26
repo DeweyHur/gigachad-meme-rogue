@@ -25,7 +25,6 @@ export default function GameScreen() {
     resolveEvent, 
     buyItem, 
     equipItem,
-    unequipItem,
     useItem,
     healPlayer,
     clearLastReward,
@@ -212,7 +211,6 @@ export default function GameScreen() {
                 equipment={player.equipment}
                 equippedItems={player.equippedItems}
                 onEquip={equipItem}
-                onUnequip={unequipItem}
               />
               
               <ItemsManager 

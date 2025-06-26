@@ -9,6 +9,7 @@ export type CardType = {
   strength?: number;
   quantity?: number;
   upgraded?: boolean;
+  grade?: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 };
 
 export type EquipmentSlotType = 'head' | 'chest' | 'weapon' | 'offhand' | 'legs' | 'feet' | 'accessory1' | 'accessory2';
@@ -20,6 +21,7 @@ export type EquipmentType = {
   image: string;
   slot: EquipmentSlotType;
   cards: CardType[];
+  grade?: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 };
 
 export type ItemType = {

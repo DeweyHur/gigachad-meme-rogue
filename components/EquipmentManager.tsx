@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, ScrollView, Image } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { COLORS, getGradeColor } from '@/constants/colors';
 import { EquipmentType, EquipmentSlotType, EquippedItemsType } from '@/types/game';
 import Card from './Card';
 
@@ -8,7 +8,6 @@ type EquipmentManagerProps = {
   equipment: EquipmentType[];
   equippedItems: EquippedItemsType;
   onEquip: (equipmentId: string, slot: EquipmentSlotType) => void;
-  onUnequip: (slot: EquipmentSlotType) => void;
 };
 
 const SLOT_NAMES: Record<EquipmentSlotType, string> = {
@@ -25,8 +24,7 @@ const SLOT_NAMES: Record<EquipmentSlotType, string> = {
 export default function EquipmentManager({ 
   equipment, 
   equippedItems, 
-  onEquip, 
-  onUnequip 
+  onEquip
 }: EquipmentManagerProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<EquipmentSlotType | null>(null);
@@ -50,10 +48,6 @@ export default function EquipmentManager({
       onEquip(equipmentId, selectedSlot);
       setSelectedSlot(null);
     }
-  };
-  
-  const handleUnequip = (slot: EquipmentSlotType) => {
-    onUnequip(slot);
   };
   
   const handleEquipmentDetails = (equip: EquipmentType) => {
@@ -105,14 +99,6 @@ export default function EquipmentManager({
                     <Text style={styles.equippedName}>
                       {getEquippedItemName(slot as EquipmentSlotType)}
                     </Text>
-                    {equippedItems[slot as EquipmentSlotType] && (
-                      <Pressable
-                        style={styles.unequipButton}
-                        onPress={() => handleUnequip(slot as EquipmentSlotType)}
-                      >
-                        <Text style={styles.unequipText}>Unequip</Text>
-                      </Pressable>
-                    )}
                   </Pressable>
                 ))}
               </View>
@@ -130,6 +116,7 @@ export default function EquipmentManager({
                         key={item.id}
                         style={[
                           styles.equipmentItem,
+                          { borderColor: getGradeColor(item.grade) },
                           equippedItems[selectedSlot] === item.id && styles.selectedEquipment,
                         ]}
                         onPress={() => handleEquip(item.id)}
@@ -137,6 +124,11 @@ export default function EquipmentManager({
                       >
                         <Image source={{ uri: item.image }} style={styles.equipmentImage} />
                         <Text style={styles.equipmentName}>{item.name}</Text>
+                        {item.grade && item.grade !== 'common' && (
+                          <View style={[styles.gradeBadge, { backgroundColor: getGradeColor(item.grade) }]}>
+                            <Text style={styles.gradeText}>{item.grade.toUpperCase()}</Text>
+                          </View>
+                        )}
                         {equippedItems[selectedSlot] === item.id && (
                           <View style={styles.equippedBadge}>
                             <Text style={styles.equippedText}>Equipped</Text>
@@ -181,6 +173,11 @@ export default function EquipmentManager({
                 <View style={styles.detailsHeaderText}>
                   <Text style={styles.detailsTitle}>{showEquipmentDetails.name}</Text>
                   <Text style={styles.detailsSlot}>Slot: {SLOT_NAMES[showEquipmentDetails.slot]}</Text>
+                  {showEquipmentDetails.grade && (
+                    <Text style={[styles.detailsGrade, { color: getGradeColor(showEquipmentDetails.grade) }]}>
+                      Grade: {showEquipmentDetails.grade.toUpperCase()}
+                    </Text>
+                  )}
                   <Text style={styles.detailsDescription}>{showEquipmentDetails.description}</Text>
                 </View>
               </View>
@@ -281,18 +278,6 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: 16,
     flex: 2,
-  },
-  unequipButton: {
-    backgroundColor: COLORS.danger,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  unequipText: {
-    color: '#FFF',
-    fontSize: 12,
-    fontWeight: 'bold',
   },
   equipmentSelector: {
     flex: 1,
@@ -456,5 +441,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignSelf: 'center',
+  },
+  gradeBadge: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+  },
+  gradeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  detailsGrade: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });

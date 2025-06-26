@@ -22,4 +22,28 @@ export const COLORS = {
   health: '#E74C3C',
   cardBorder: '#333333',
   cardBackground: '#252525',
+  // Grade colors for equipment and cards
+  gradeCommon: '#9E9E9E',      // Gray
+  gradeUncommon: '#4CAF50',    // Green
+  gradeRare: '#2196F3',        // Blue
+  gradeEpic: '#9C27B0',        // Purple
+  gradeLegendary: '#FF9800',   // Orange
+};
+
+// Utility function to get grade color
+export const getGradeColor = (grade?: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary') => {
+  switch (grade) {
+    case 'common':
+      return COLORS.gradeCommon;
+    case 'uncommon':
+      return COLORS.gradeUncommon;
+    case 'rare':
+      return COLORS.gradeRare;
+    case 'epic':
+      return COLORS.gradeEpic;
+    case 'legendary':
+      return COLORS.gradeLegendary;
+    default:
+      return COLORS.cardBorder;
+  }
 };
