@@ -208,8 +208,8 @@ const drawCards = (count: number, state: GameStateType): GameStateType => {
 const addBattleLogEntry = (
   battleLog: BattleLogEntryType[],
   type: 'damage' | 'block' | 'heal' | 'effect' | 'card',
-  source: 'player' | 'enemy',
-  target: 'player' | 'enemy',
+  source: 'player' | 'enemy' | 'system',
+  target: 'player' | 'enemy' | 'system',
   value: number,
   message: string
 ): BattleLogEntryType[] => {
@@ -510,6 +510,16 @@ export const useGameStore = create<GameStore>()(
           intent,
         };
         
+        // Add initial turn message to battle log
+        const initialBattleLog = addBattleLogEntry(
+          [],
+          'effect',
+          'system',
+          'system',
+          0,
+          `--- Turn 1 - Player Turn ---`
+        );
+        
         set({
           gameState: {
             ...gameState,
@@ -518,7 +528,7 @@ export const useGameStore = create<GameStore>()(
               enemy: updatedEnemy,
               turn: 1,
               playerTurn: true,
-              battleLog: []
+              battleLog: initialBattleLog
             },
             gameStatus: 'battle',
           },
@@ -788,74 +798,69 @@ export const useGameStore = create<GameStore>()(
         const { gameState } = get();
         if (!gameState.currentBattle) return;
         
-        // Discard hand
-        get().discardHand();
+        const { currentBattle } = gameState;
+        const { playerTurn, turn, battleLog } = currentBattle;
         
-        // Handle enemy turn
-        get().handleEnemyTurn();
-        
-        // Start new player turn if battle continues
-        if (gameState.currentBattle && gameState.player.health > 0) {
-          const updatedBattle = {
-            ...gameState.currentBattle,
-            turn: gameState.currentBattle.turn + 1,
-            playerTurn: true,
-          };
-          
-          // Reset player energy and draw new hand
-          const updatedPlayer = {
-            ...gameState.player,
-            energy: gameState.player.maxEnergy,
-            block: 0, // Reset block at end of turn
-          };
+        if (playerTurn) {
+          // Add enemy turn message to battle log
+          const updatedBattleLog = addBattleLogEntry(
+            battleLog,
+            'effect',
+            'system',
+            'system',
+            0,
+            `--- Turn ${turn} - Enemy Turn ---`
+          );
           
           set({
             gameState: {
               ...gameState,
-              player: updatedPlayer,
-              currentBattle: updatedBattle,
+              currentBattle: {
+                ...currentBattle,
+                playerTurn: false,
+                battleLog: updatedBattleLog
+              },
             },
           });
           
-          // Draw new hand
-          get().drawNewHand();
+          // Handle enemy turn
+          get().handleEnemyTurn();
           
-          // Set new enemy intent
-          const { enemy } = updatedBattle;
-          if (enemy) {
-            let intent = undefined;
-            
-            if ('moves' in enemy && enemy.moves) {
-              const randomMove = enemy.moves[Math.floor(Math.random() * enemy.moves.length)];
-              intent = {
-                name: randomMove.name,
-                damage: randomMove.damage,
-                effect: randomMove.effect,
-              };
-            } else if ('abilities' in enemy && enemy.abilities) {
-              const randomAbility = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
-              intent = {
-                name: randomAbility.name,
-                damage: randomAbility.damage,
-                effect: randomAbility.effect,
-              };
+          // Get the updated state after enemy turn
+          const updatedGameState = get().gameState;
+          if (!updatedGameState.currentBattle) return;
+          
+          // Start new player turn
+          const newTurn = turn + 1;
+          const newBattleLog = addBattleLogEntry(
+            updatedGameState.currentBattle.battleLog,
+            'effect',
+            'system',
+            'system',
+            0,
+            `--- Turn ${newTurn} - Player Turn ---`
+          );
+          
+          // Draw new hand and reset energy
+          const updatedState = drawCards(5, {
+            ...updatedGameState,
+            player: {
+              ...updatedGameState.player,
+              energy: updatedGameState.player.maxEnergy
             }
-            
-            if (intent) {
-              set({
-                gameState: {
-                  ...get().gameState,
-                  currentBattle: {
-                    ...get().gameState.currentBattle!,
-                    enemy: {
-                      ...enemy,
-                      intent,
-                    },
-                  },
-                },
-              });
-            }
-          }
+          });
+          
+          set({
+            gameState: {
+              ...updatedState,
+              currentBattle: {
+                ...updatedGameState.currentBattle,
+                turn: newTurn,
+                playerTurn: true,
+                battleLog: newBattleLog
+              },
+            },
+          });
         }
       },
       
@@ -866,90 +871,164 @@ export const useGameStore = create<GameStore>()(
         const { player, currentBattle } = gameState;
         const { enemy, battleLog } = currentBattle;
         
+        let updatedPlayer = { ...player };
+        let updatedBattleLog = [...battleLog];
+        let updatedEnemy = { ...enemy };
+        
+        // If enemy has no intent, generate one first
+        if (!enemy.intent) {
+          let newIntent = undefined;
+          if ('moves' in enemy && enemy.moves) {
+            const randomMove = enemy.moves[Math.floor(Math.random() * enemy.moves.length)];
+            newIntent = {
+              name: randomMove.name,
+              damage: randomMove.damage,
+              effect: randomMove.effect,
+            };
+          } else if ('abilities' in enemy && enemy.abilities) {
+            const randomAbility = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
+            newIntent = {
+              name: randomAbility.name,
+              damage: randomAbility.damage,
+              effect: randomAbility.effect,
+            };
+          }
+          updatedEnemy.intent = newIntent;
+        }
+        
         // Apply enemy intent
-        if (enemy && enemy.intent && enemy.intent.damage) {
-          let damage = enemy.intent.damage + (enemy.strength || 0);
-          let updatedPlayer = { ...player };
-          let updatedBattleLog = [...battleLog];
-          
-          // Log the incoming damage
+        if (updatedEnemy.intent) {
+          // Log the enemy's intent
           updatedBattleLog = addBattleLogEntry(
             updatedBattleLog,
-            'damage',
+            'effect',
             'enemy',
-            'player',
-            damage,
-            `Enemy attacks for ${damage} damage`
+            'enemy',
+            0,
+            `Enemy uses ${updatedEnemy.intent.name}`
           );
           
-          if (updatedPlayer.block > 0) {
-            if (updatedPlayer.block >= damage) {
-              updatedBattleLog = addBattleLogEntry(
-                updatedBattleLog,
-                'block',
-                'player',
-                'player',
-                damage,
-                `Blocked ${damage} damage`
-              );
-              updatedPlayer.block -= damage;
-              damage = 0;
-            } else {
-              const remainingDamage = damage - updatedPlayer.block;
-              updatedBattleLog = addBattleLogEntry(
-                updatedBattleLog,
-                'block',
-                'player',
-                'player',
-                updatedPlayer.block,
-                `Blocked ${updatedPlayer.block} damage`
-              );
-              damage = remainingDamage;
-              updatedPlayer.block = 0;
-            }
-          }
-          
-          if (damage > 0) {
-            updatedPlayer.health = Math.max(0, updatedPlayer.health - damage);
+          // Handle damage
+          if (updatedEnemy.intent.damage) {
+            let damage = updatedEnemy.intent.damage + (enemy.strength || 0);
+            
+            // Log the incoming damage
             updatedBattleLog = addBattleLogEntry(
               updatedBattleLog,
               'damage',
               'enemy',
               'player',
               damage,
-              `Took ${damage} damage`
+              `Enemy attacks for ${damage} damage`
             );
+            
+            if (updatedPlayer.block > 0) {
+              if (updatedPlayer.block >= damage) {
+                updatedBattleLog = addBattleLogEntry(
+                  updatedBattleLog,
+                  'block',
+                  'player',
+                  'player',
+                  damage,
+                  `Blocked ${damage} damage`
+                );
+                updatedPlayer.block -= damage;
+                damage = 0;
+              } else {
+                const remainingDamage = damage - updatedPlayer.block;
+                updatedBattleLog = addBattleLogEntry(
+                  updatedBattleLog,
+                  'block',
+                  'player',
+                  'player',
+                  updatedPlayer.block,
+                  `Blocked ${updatedPlayer.block} damage`
+                );
+                damage = remainingDamage;
+                updatedPlayer.block = 0;
+              }
+            }
+            
+            if (damage > 0) {
+              updatedPlayer.health = Math.max(0, updatedPlayer.health - damage);
+              updatedBattleLog = addBattleLogEntry(
+                updatedBattleLog,
+                'damage',
+                'enemy',
+                'player',
+                damage,
+                `Took ${damage} damage`
+              );
+            }
           }
           
-          // Check for player defeat
-          if (updatedPlayer.health === 0) {
-            set({
-              gameState: {
-                ...gameState,
-                player: updatedPlayer,
-                currentBattle: {
-                  ...currentBattle,
-                  playerTurn: false,
-                  battleLog: updatedBattleLog
-                },
-                gameStatus: 'defeat',
-              },
-            });
-            return;
+          // Handle effects
+          if (updatedEnemy.intent.effect) {
+            if (updatedEnemy.intent.effect === 'strength') {
+              const strengthGain = 2; // Default strength gain
+              updatedEnemy.strength = (updatedEnemy.strength || 0) + strengthGain;
+              updatedBattleLog = addBattleLogEntry(
+                updatedBattleLog,
+                'effect',
+                'enemy',
+                'enemy',
+                strengthGain,
+                `Enemy gained ${strengthGain} strength`
+              );
+            }
           }
-          
+        }
+        
+        // Generate new enemy intent for next turn
+        let newIntent = undefined;
+        if ('moves' in enemy && enemy.moves) {
+          const randomMove = enemy.moves[Math.floor(Math.random() * enemy.moves.length)];
+          newIntent = {
+            name: randomMove.name,
+            damage: randomMove.damage,
+            effect: randomMove.effect,
+          };
+        } else if ('abilities' in enemy && enemy.abilities) {
+          const randomAbility = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
+          newIntent = {
+            name: randomAbility.name,
+            damage: randomAbility.damage,
+            effect: randomAbility.effect,
+          };
+        }
+        
+        updatedEnemy.intent = newIntent;
+        
+        // Check for player defeat
+        if (updatedPlayer.health === 0) {
           set({
             gameState: {
               ...gameState,
               player: updatedPlayer,
               currentBattle: {
                 ...currentBattle,
+                enemy: updatedEnemy,
                 playerTurn: false,
                 battleLog: updatedBattleLog
               },
+              gameStatus: 'defeat',
             },
           });
+          return;
         }
+        
+        set({
+          gameState: {
+            ...gameState,
+            player: updatedPlayer,
+            currentBattle: {
+              ...currentBattle,
+              enemy: updatedEnemy,
+              playerTurn: false,
+              battleLog: updatedBattleLog
+            },
+          },
+        });
       },
       
       discardHand: () => {

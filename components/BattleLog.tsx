@@ -29,7 +29,7 @@ export default function BattleLog({ entries }: BattleLogProps) {
       case 'heal':
         return COLORS.success;
       case 'effect':
-        return COLORS.secondary;
+        return entry.source === 'system' ? COLORS.textSecondary : COLORS.secondary;
       case 'card':
         return COLORS.primary;
       default:

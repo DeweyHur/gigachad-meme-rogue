@@ -49,6 +49,7 @@ export type EnemyType = {
     name: string;
     damage?: number;
     effect?: string;
+    value?: number;
   };
   strength?: number;
   block?: number;
@@ -148,8 +149,8 @@ export type PlayerType = {
 export type BattleLogEntryType = {
   id: string;
   type: 'damage' | 'block' | 'heal' | 'effect' | 'card';
-  source: 'player' | 'enemy';
-  target: 'player' | 'enemy';
+  source: 'player' | 'enemy' | 'system';
+  target: 'player' | 'enemy' | 'system';
   value: number;
   message: string;
   timestamp: number;

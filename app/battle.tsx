@@ -105,6 +105,9 @@ export default function BattleScreen() {
         ]}>
           {playerTurn ? "Your Turn" : "Enemy Turn"}
         </Text>
+        <Text style={styles.debugText}>
+          Debug: {JSON.stringify({ turn, playerTurn, enemyIntent: enemy.intent })}
+        </Text>
       </View>
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -271,5 +274,10 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  debugText: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    marginTop: 5,
   },
 });
