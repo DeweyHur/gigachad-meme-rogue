@@ -1,0 +1,120 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# MDC (Model-Driven Configuration) Rule for Gigachad Meme Rogue
+
+# Project Configuration
+project:
+  name: "Gigachad Meme Rogue"
+  type: "react-native-expo"
+  platform: "rork"
+  version: "1.0.0"
+
+# Development Rules
+development:
+  # Code Quality Rules
+  linting:
+    - "Use TypeScript strict mode"
+    - "Import React in all JSX files"
+    - "Use proper type annotations"
+    - "Follow component naming conventions"
+  
+  # File Structure Rules
+  structure:
+    - "Components in /components directory"
+    - "Types in /types directory"
+    - "Constants in /constants directory"
+    - "Store logic in /store directory"
+    - "App screens in /app directory"
+
+  # State Management Rules
+  state:
+    - "Use Zustand for global state"
+    - "Persist game state with AsyncStorage"
+    - "Keep state normalized"
+    - "Use proper TypeScript types for state"
+
+# Game Configuration Rules
+game:
+  # Balance Rules
+  balance:
+    - "Player starting health: 80"
+    - "Player starting energy: 3"
+    - "Max hand size: 3"
+    - "Path height: 7 nodes"
+    - "Max path width: 4 nodes"
+  
+  # Node Distribution Rules
+  nodes:
+    battle: 0.5
+    shop: 0.15
+    event: 0.15
+    camp: 0.1
+    shrine: 0.05
+    blacksmith: 0.05
+  
+  # Equipment Rules
+  equipment:
+    - "Each equipment provides cards"
+    - "Cards have energy costs"
+    - "Equipment affects player stats"
+    - "Equipment can be upgraded"
+
+# UI/UX Rules
+ui:
+  # Color Scheme
+  colors:
+    primary: "#FF6B35"
+    secondary: "#4ECDC4"
+    background: "#2C3E50"
+    text: "#ECF0F1"
+    success: "#27AE60"
+    error: "#E74C3C"
+  
+  # Component Rules
+  components:
+    - "Use consistent spacing (8px base)"
+    - "Use rounded corners (8px radius)"
+    - "Implement proper touch targets"
+    - "Use proper contrast ratios"
+    - "Support dark/light themes"
+
+# Performance Rules
+performance:
+  - "Optimize re-renders with React.memo"
+  - "Use proper key props in lists"
+  - "Lazy load components when possible"
+  - "Optimize images and assets"
+  - "Minimize bundle size"
+
+# Testing Rules
+testing:
+  - "Write unit tests for game logic"
+  - "Test state management functions"
+  - "Test component rendering"
+  - "Test user interactions"
+
+# Deployment Rules
+deployment:
+  - "Use Rork platform for development"
+  - "Configure proper bundle identifiers"
+  - "Set up proper app icons"
+  - "Configure splash screens"
+  - "Set up proper navigation"
+
+# Security Rules
+security:
+  - "Validate all user inputs"
+  - "Sanitize data before storage"
+  - "Use secure storage for sensitive data"
+  - "Implement proper error handling"
+
+# Accessibility Rules
+accessibility:
+  - "Use proper accessibility labels"
+  - "Support screen readers"
+  - "Provide alternative text for images"
+  - "Use proper contrast ratios"
+  - "Support keyboard navigation"
