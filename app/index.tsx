@@ -26,7 +26,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Image 
-            source={{ uri: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?q=80&w=300' }} 
+            source={{ uri: 'https://en.meming.world/images/en/1/18/Giga_Chad.jpg?q=80&w=300' }} 
             style={styles.logo} 
           />
           <Text style={styles.title}>Gigachad vs. Italian Brain Rots</Text>
