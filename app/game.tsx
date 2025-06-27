@@ -15,6 +15,7 @@ import EquipmentManager from '@/components/EquipmentManager';
 import ItemsManager from '@/components/ItemsManager';
 import PerksViewer from '@/components/PerksViewer';
 import DeckViewer from '@/components/DeckViewer';
+import MusicControls from '@/components/MusicControls';
 
 export default function GameScreen() {
   const { 
@@ -230,6 +231,7 @@ export default function GameScreen() {
   
   return (
     <SafeAreaView style={styles.container}>
+      <MusicControls />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {renderContent()}
       </ScrollView>

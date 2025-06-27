@@ -3,7 +3,7 @@ export const GAME_CONFIG = {
   playerStartingEnergy: 3,
   maxHandSize: 5,
   maxPathWidth: 4,
-  pathHeight: 7, // Including start and boss nodes
+  pathHeight: 15, // Including start and boss nodes
   nodeTypes: ['battle', 'shop', 'event', 'camp', 'shrine', 'blacksmith'],
   nodeWeights: {
     battle: 0.5,
@@ -22,6 +22,7 @@ export const BOSSES = [
     description: 'The first and most iconic Italian brainrot character.',
     health: 120,
     image: 'https://static.wikitide.net/italianbrainrotwiki/e/e0/Tralalelo_tralala.png',
+    voice: require('../assets/audios/Tralalero Tralala Sound Effect.mp3'),
     abilities: [
       { name: 'Surreal Melody', damage: 12, description: 'Confuses with its iconic sound' },
       { name: 'Visual Distortion', damage: 8, effect: 'weakness', description: 'Applies weakness with surreal visuals' },
@@ -35,6 +36,7 @@ export const BOSSES = [
     description: 'Indonesian origin character with distinct rhythm.',
     health: 140,
     image: 'https://static.wikitide.net/italianbrainrotwiki/f/fa/Tung_tung_tung_sahur.png',
+    voice: null, // Placeholder for future sound effect
     abilities: [
       { name: 'Rhythmic Assault', damage: 10, hits: 3, description: 'Strikes multiple times with its rhythm' },
       { name: 'Cultural Fusion', damage: 15, effect: 'vulnerable', description: 'Applies vulnerable with cultural confusion' },
@@ -48,6 +50,7 @@ export const BOSSES = [
     description: 'Anthropomorphic crocodile bomber plane.',
     health: 160,
     image: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Bombardiro_Crocodillo.jpg',
+    voice: null, // Placeholder for future sound effect
     abilities: [
       { name: 'Aerial Assault', damage: 18, description: 'Dive bombs from above' },
       { name: 'Crocodile Bite', damage: 14, effect: 'bleed', description: 'Applies bleed with powerful jaws' },
@@ -61,6 +64,7 @@ export const BOSSES = [
     description: 'Ballet dancer with a cappuccino mug head.',
     health: 130,
     image: 'https://static.wikitide.net/italianbrainrotwiki/9/9a/Ballerina_cappucappu.png',
+    voice: null, // Placeholder for future sound effect
     abilities: [
       { name: 'Pirouette', damage: 12, effect: 'dodge', description: 'Spins gracefully, gaining dodge' },
       { name: 'Hot Coffee Splash', damage: 16, effect: 'burn', description: 'Splashes hot coffee, applying burn' },
@@ -74,6 +78,7 @@ export const BOSSES = [
     description: 'Time-bending character with surreal abilities.',
     health: 180,
     image: 'https://static.wikitide.net/italianbrainrotwiki/5/52/Lirili_Larila.jpeg',
+    voice: null, // Placeholder for future sound effect
     abilities: [
       { name: 'Time Warp', damage: 14, effect: 'stun', description: 'Bends time, potentially stunning' },
       { name: 'Reality Distortion', damage: 20, description: 'Warps reality around the target' },

@@ -67,6 +67,7 @@ export type BossType = {
   health: number;
   currentHealth?: number;
   image: string;
+  voice?: any; // Sound effect/voice file for the boss
   abilities: {
     name: string;
     damage: number;

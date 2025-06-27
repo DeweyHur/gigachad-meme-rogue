@@ -7,6 +7,7 @@ import { COLORS } from '@/constants/colors';
 import { BOSSES } from '@/constants/game';
 import BossSelector from '@/components/BossSelector';
 import { useGameStore } from '@/store/gameStore';
+import MusicControls from '@/components/MusicControls';
 
 export default function HomeScreen() {
   const { gameState, initGame, resetGame } = useGameStore();
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   
   return (
     <SafeAreaView style={styles.container}>
+      <MusicControls />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Image 

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, ScrollView, Modal } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants/colors';
 import { BossType } from '@/types/game';
+import { soundEffectService } from '@/services/soundEffectService';
 
 type BossSelectorProps = {
   bosses: BossType[];
@@ -16,7 +18,26 @@ export default function BossSelector({
 }: BossSelectorProps) {
   const [selectedBoss, setSelectedBoss] = useState<BossType | null>(null);
   
-  const handleBossPress = (boss: BossType) => {
+  useEffect(() => {
+    // Initialize sound effect service and preload boss sounds
+    const initSoundEffects = async () => {
+      await soundEffectService.initialize();
+      await soundEffectService.preloadBossSounds();
+    };
+    
+    initSoundEffects();
+
+    return () => {
+      soundEffectService.cleanup();
+    };
+  }, []);
+  
+  const handleBossPress = async (boss: BossType) => {
+    // Play boss voice/sound effect if available
+    if (boss.voice) {
+      await soundEffectService.playSoundEffect(boss.id);
+    }
+    
     setSelectedBoss(boss);
   };
   
@@ -49,6 +70,11 @@ export default function BossSelector({
             >
               <Image source={{ uri: boss.image }} style={styles.bossImage} />
               <Text style={styles.bossName}>{boss.name}</Text>
+              {boss.voice && (
+                <View style={styles.voiceIndicator}>
+                  <Ionicons name="volume-high" size={16} color="#fff" />
+                </View>
+              )}
               {isDefeated && (
                 <View style={styles.defeatedBadge}>
                   <Text style={styles.defeatedText}>Defeated</Text>
@@ -161,7 +187,7 @@ const styles = StyleSheet.create({
   defeatedBadge: {
     position: 'absolute',
     top: 10,
-    right: 10,
+    left: 10,
     backgroundColor: COLORS.success,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -299,5 +325,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  voiceIndicator: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: COLORS.info,
+    padding: 4,
+    borderRadius: 10,
   },
 });
